@@ -9,7 +9,7 @@ await load({
     exampleFile: ".env.example",
 });
 
-class Novo {
+class NovoTest {
 
     public client: MongoClient | undefined;
     public model: typeof model;
@@ -37,10 +37,10 @@ if (!DATABASE_URL) {
     Deno.exit(1)
 }
 
-const novo: Novo = new Novo();
+const novo_test: NovoTest = new NovoTest();
 
 /** If you want to test Novo, you cant open TCP connection here.
  * Do it inside your test instead.
 */
 // await novo.connect(DATABASE_URL);
-export { novo };
+export { novo_test };
