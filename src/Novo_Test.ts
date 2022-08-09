@@ -1,10 +1,10 @@
-import { loadEnv } from '../deps.ts';
+import { load } from '../deps.ts';
 
 import { ConnectOptions, MongoClient } from '../deps.ts';
 import connection from './Connection.ts';
 import model from './Model.ts';
 
-await loadEnv({
+await load({
     path: ".env",
     exampleFile: ".env.example",
 });
