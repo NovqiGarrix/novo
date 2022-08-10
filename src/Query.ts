@@ -332,7 +332,7 @@ interface IMovieModel {
 
 }
 
-const query = new Query<IMovieModel>("users");
+// const query = new Query<IMovieModel>("users");
 // await query.create({ poster: "", slug: "", title: "" }, {})
 // const datas = await query.createMany([{ poster: "", slug: "", title: "" }], {})
 // const upsert = await query.upsert({ slug: "ok" }, { poster: "Oke", slug: "Ok", title: "OK" });
