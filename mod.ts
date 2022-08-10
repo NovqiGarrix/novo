@@ -1,2 +1,2 @@
-export * from './src/Novo.ts';
-export * from './src/Novo_Test.ts';
+export { novo } from './src/Novo.ts';
+export { novo_test } from './src/Novo_Test.ts';
