@@ -2,7 +2,7 @@ import { load } from '../deps.ts';
 
 import { ConnectOptions, MongoClient } from '../deps.ts';
 import connection from './Connection.ts';
-import model, { Model } from './Model.ts';
+import model from './Model.ts';
 
 await load({
     path: ".env",
@@ -37,9 +37,5 @@ if (!DATABASE_URL) {
     Deno.exit(1)
 }
 
-const novo: Novo = new Novo();
-
+export const novo: Novo = new Novo();
 await novo.connect(DATABASE_URL);
-
-export { Model, novo }
-export * from './Query.ts';

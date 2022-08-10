@@ -4,7 +4,7 @@
  * 
  * Instead, We have to do it manually inside your test.
  */
-import { novo_test as novo } from '../../mod.ts';
+import { novo_test as novo } from '../../src/Novo_Test.ts';
 
 import { Model } from '../../src/Model.ts';
 import { CreateMany } from '../../src/Query.ts';
