@@ -1,13 +1,6 @@
-import { load } from '../deps.ts';
-
 import { ConnectOptions, MongoClient } from '../deps.ts';
 import connection from './Connection.ts';
 import model from './Model.ts';
-
-await load({
-    path: ".env",
-    exampleFile: ".env.example",
-});
 
 class NovoTest {
 
@@ -29,12 +22,6 @@ class NovoTest {
         this.client.close();
     }
 
-}
-
-const DATABASE_URL = Deno.env.get("DATABASE_URL");
-if (!DATABASE_URL) {
-    console.error("Please define your DATABASE_URL in your .env file!");
-    Deno.exit(1)
 }
 
 const novo_test: NovoTest = new NovoTest();

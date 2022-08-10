@@ -4,11 +4,6 @@ import { ConnectOptions, MongoClient } from '../deps.ts';
 import connection from './Connection.ts';
 import model from './Model.ts';
 
-await load({
-    path: ".env",
-    exampleFile: ".env.example",
-});
-
 class Novo {
 
     public client: MongoClient | undefined;
@@ -29,6 +24,14 @@ class Novo {
         this.client.close();
     }
 
+}
+
+const DENO_ENV = Deno.env.get("DENO_ENV") || "DEVELOPMENT";
+if (DENO_ENV === "DEVELOPMENT") {
+    await load({
+        path: ".env",
+        exampleFile: ".env.example",
+    });
 }
 
 const DATABASE_URL = Deno.env.get("DATABASE_URL");
