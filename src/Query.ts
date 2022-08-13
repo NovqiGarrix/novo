@@ -26,7 +26,7 @@ export class Query<T> {
      * @param options 
      * @returns 
      */
-    async aggregate(pipeline: Array<AggregatePipeline<T>>, options: AggregateOptions) {
+    async aggregate(pipeline: Array<AggregatePipeline<T>>, options?: AggregateOptions) {
         if (!this.collection) throw new Error("You haven't connect to the database, Buddy.");
         return this.collection.aggregate(pipeline, options);
     }
