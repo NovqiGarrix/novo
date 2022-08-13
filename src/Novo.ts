@@ -1,4 +1,4 @@
-import { load } from '../deps.ts';
+import { configAsync } from '../deps.ts';
 
 import { ConnectOptions, MongoClient } from '../deps.ts';
 import connection from './Connection.ts';
@@ -26,15 +26,9 @@ class Novo {
 
 }
 
-const DENO_ENV = Deno.env.get("DENO_ENV") || "DEVELOPMENT";
-if (DENO_ENV === "DEVELOPMENT") {
-    await load({
-        path: ".env",
-        exampleFile: ".env.example",
-    });
-}
+const env = await configAsync();
 
-const DATABASE_URL = Deno.env.get("DATABASE_URL");
+const DATABASE_URL = Deno.env.get("DATABASE_URL") || env.DATABASE_URL;
 if (!DATABASE_URL) {
     console.error("Please define your DATABASE_URL in your .env file!");
     Deno.exit(1)

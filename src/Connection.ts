@@ -9,7 +9,7 @@ export class Connection {
         this.client = new MongoClient();
 
         let connectionString: string | undefined = undefined;
-        if (typeof options === "string") connectionString = options.replace("localhost", "127.0.0.1");
+        if (typeof options === "string" && options.includes("mongodb://localhost")) connectionString = options.replace("localhost", "127.0.0.1");
 
         await this.client.connect(connectionString ?? options);
 
