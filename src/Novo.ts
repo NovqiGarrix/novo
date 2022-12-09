@@ -1,8 +1,9 @@
-import { configAsync } from '../deps.ts';
+import 'https://deno.land/x/dotenv@v3.2.0/load.ts';
 
 import { ConnectOptions, MongoClient } from '../deps.ts';
-import connection from './Connection.ts';
+
 import model from './Model.ts';
+import connection from './Connection.ts';
 
 class Novo {
 
@@ -26,9 +27,7 @@ class Novo {
 
 }
 
-const env = await configAsync();
-
-const DATABASE_URL = Deno.env.get("DATABASE_URL") || env.DATABASE_URL;
+const DATABASE_URL = Deno.env.get("DATABASE_URL");
 if (!DATABASE_URL) {
     console.error("Please define your DATABASE_URL in your .env file!");
     Deno.exit(1)
