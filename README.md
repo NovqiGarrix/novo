@@ -1,10 +1,7 @@
 # Novo
 
-## Novo is a Future of Mongodb Object Modeling for Deno.js
-
-Novo is created for your Mongodb Object Modeling in Deno.js environment. It's
-easy to use and blazingly fast. The syntaxs are pretty the same with Mongoose
-(The most popular Mongodb Object Modeling for Node.js)
+Novo is a simple Object Data Modeling (ODM) for MongoDB. Novo is created for your Mongodb project in Deno. 
+It's easy to use and blazingly fast.
 
 ## TODOs
 
