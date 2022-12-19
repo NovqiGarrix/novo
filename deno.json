@@ -1,30 +1,6 @@
 {
-  "fmt": {
-    "files": {
-      "include": [],
-      "exclude": []
-    },
-    "options": {}
-  },
-  "lint": {
-    "files": {
-      "include": [],
-      "exclude": []
-    },
-    "rules": {
-      "tags": [],
-      "include": [],
-      "exclude": []
-    }
-  },
   "tasks": {
-    "example": "deno run -A example/index.ts"
-  },
-  "test": {
-    "files": {
-      "include": [],
-      "exclude": []
-    }
-  },
-  "compilerOptions": {}
+    "example": "deno run -A example/index.ts",
+    "test": "deno test -A tests"
+  }
 }

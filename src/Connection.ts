@@ -19,7 +19,7 @@ export class Connection {
     return this.client;
   }
 
-  async disconnect(): Promise<void> {
+  disconnect(): void {
     if (this.client) {
       this.client.close();
     } else {

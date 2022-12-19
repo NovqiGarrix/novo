@@ -1,12 +1,3 @@
-/**
- * The only difference between novo and novo_test is that in novo_test,
- * we can't open a TCP connection to the database.
- *
- * Instead, We have to do it manually inside your test.
- */
-import { novo_test as novo } from "../../src/Novo_Test.ts";
-
-import { Model } from "../../src/Model.ts";
 import {
   afterAll,
   assertEquals,
@@ -15,9 +6,13 @@ import {
   describe,
   it,
 } from "../test.deps.ts";
+import { ObjectId } from "../../deps.ts";
+
+import { novo } from "../../src/Novo.ts";
+import { Model } from "../../src/Model.ts";
 
 interface IDeleteModel {
-  _id: string;
+  _id: ObjectId;
 
   name: string;
 
@@ -28,7 +23,7 @@ interface IDeleteModel {
   updatedAt: Date;
 }
 
-describe("Delete Query Unit Testing", async () => {
+describe("Delete Query Unit Testing", () => {
   let DeleteModel: Model<IDeleteModel> = (undefined as unknown) as Model<
     IDeleteModel
   >;
@@ -44,7 +39,7 @@ describe("Delete Query Unit Testing", async () => {
 
   afterAll(async () => {
     await DeleteModel.deleteMany();
-    await novo.disconnect();
+    novo.disconnect();
   });
 
   it("Should delete a document", async () => {

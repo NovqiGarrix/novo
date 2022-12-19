@@ -1,12 +1,3 @@
-/**
- * The only difference between novo and novo_test is that in novo_test,
- * we can't open a TCP connection to the database.
- *
- * Instead, We have to do it manually inside your test.
- */
-import { novo_test as novo } from "../../src/Novo_Test.ts";
-
-import { ObjectId } from "../../deps.ts";
 import {
   afterAll,
   assertEquals,
@@ -15,11 +6,14 @@ import {
   equal,
   it,
 } from "../test.deps.ts";
-import { CreateMany } from "../../src/Query.ts";
+import { ObjectId } from "../../deps.ts";
+
+import { novo } from "../../src/Novo.ts";
 import { Model } from "../../src/Model.ts";
+import { CreateMany } from "../../src/Query.ts";
 
 interface TestModel {
-  _id: string;
+  _id: ObjectId;
 
   name: string;
 
@@ -38,13 +32,12 @@ describe("Create Query Unit Testing", () => {
 
   afterAll(async () => {
     await TestModel.deleteMany();
-    await novo.disconnect();
+    novo.disconnect();
   });
 
   it("Should create a new document from a model", async () => {
     const doc = await TestModel.create({ name: "First Docs!!!" });
     equal(doc, {
-      // @ts-ignore
       _id: doc._id instanceof ObjectId,
       name: "First Docs!!!",
       createdAt: doc.createdAt instanceof Date,

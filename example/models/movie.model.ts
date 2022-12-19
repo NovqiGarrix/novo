@@ -1,7 +1,7 @@
-import { novo } from "../../mod.ts";
+import { novo, ObjectId } from "../../mod.ts";
 
 interface IMovieModel {
-  _id: string;
+  _id: ObjectId;
 
   slug: string;
 
@@ -14,5 +14,5 @@ interface IMovieModel {
   updatedAt: string;
 }
 
-const MovieModel = novo.model<IMovieModel>("movies");
-export default MovieModel;
+const createMovieModel = () => novo.model<IMovieModel>("movies");
+export default createMovieModel;

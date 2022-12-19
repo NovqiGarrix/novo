@@ -3,14 +3,15 @@ import {
   assertEquals,
   beforeAll,
   describe,
-  equal,
   it,
 } from "../test.deps.ts";
-import { novo_test as novo } from "../../src/Novo_Test.ts";
+import { ObjectId } from '../../deps.ts';
+
+import { novo } from "../../src/Novo.ts";
 import { Model } from "../../src/Model.ts";
 
 interface UpdateModel {
-  _id: string;
+  _id: ObjectId;
 
   name: string;
 
@@ -34,7 +35,7 @@ describe("Update Query Unit Testing", () => {
 
   afterAll(async () => {
     await UpdateModel.deleteMany();
-    await novo.disconnect();
+    novo.disconnect();
   });
 
   describe("UpdateOne Function", () => {

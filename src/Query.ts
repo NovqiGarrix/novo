@@ -1,4 +1,4 @@
-import { novo } from "./Novo.ts";
+import { Novo } from "./Novo.ts";
 import {
   AggregateOptions,
   AggregatePipeline,
@@ -9,13 +9,14 @@ import {
   DropIndexOptions,
   DropOptions,
   Filter,
+  FindCursor,
   FindOptions,
   InsertDocument,
   InsertOptions,
+  ObjectId,
   UpdateFilter,
   UpdateOptions,
 } from "../deps.ts";
-import { FindCursor } from "https://deno.land/x/mongo@v0.31.0/src/collection/commands/find.ts";
 
 export type CreateOne<T> = Omit<
   T,
@@ -28,12 +29,24 @@ interface Timestamp {
   updatedAt: Date;
 }
 
-export class Query<T> {
+export class Query<T extends { _id: ObjectId }> {
   private collection: Collection<T> | undefined;
 
-  constructor(collectionName: string) {
-    const db = novo.client?.database();
-    this.collection = db?.collection<T>(collectionName);
+  constructor(collectionName: string, dbName?: string) {
+    if (!Novo.client) {
+      throw new Error("You have to connect to the database first.");
+    }
+
+    const db = Novo.client.database(dbName);
+    this.collection = db.collection<T>(collectionName);
+  }
+
+  private checkConnection() {
+    if (!this.collection) {
+      throw new Error("You haven't connect to the database, Buddy.");
+    }
+
+    return this.collection;
   }
 
   /**
@@ -47,10 +60,8 @@ export class Query<T> {
     pipeline: Array<AggregatePipeline<T>>,
     options?: AggregateOptions,
   ) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.aggregate(pipeline, options);
+    const collection = this.checkConnection();
+    return collection.aggregate(pipeline, options);
   }
 
   /**
@@ -62,18 +73,16 @@ export class Query<T> {
    * @returns
    */
   async create(data: CreateOne<T>, options?: InsertOptions): Promise<T> {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
+    const collection = this.checkConnection();
 
-    const inserdata: CreateOne<T> & Timestamp = {
-      ...data,
+    const insertData: CreateOne<T> & Timestamp = {
+      ...data as CreateOne<T>,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
 
-    const createdID = await this.collection.insertOne(
-      (inserdata as unknown) as InsertDocument<T>,
+    const createdID = await collection.insertOne(
+      (insertData as unknown) as InsertDocument<T>,
       options,
     );
     return (await this.findOne({ _id: createdID }))!;
@@ -86,10 +95,8 @@ export class Query<T> {
    * @returns
    */
   async createIndexes(options: CreateIndexOptions) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.createIndexes(options);
+    const collection = this.checkConnection();
+    return collection.createIndexes(options);
   }
 
   /**
@@ -100,9 +107,7 @@ export class Query<T> {
    * @returns
    */
   async createMany(data: CreateMany<T>, options?: InsertOptions) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
+    const collection = this.checkConnection();
 
     const inserdata = data.map((item) => ({
       ...item,
@@ -110,7 +115,7 @@ export class Query<T> {
       updatedAt: new Date(),
     }));
 
-    const results = await this.collection.insertMany(
+    const results = await collection.insertMany(
       (inserdata as unknown) as InsertDocument<T>[],
       options,
     );
@@ -124,10 +129,8 @@ export class Query<T> {
    * @returns
    */
   async count(filter?: Filter<T>): Promise<number> {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.countDocuments(filter);
+    const collection = this.checkConnection();
+    return collection.countDocuments(filter);
   }
 
   /**
@@ -138,10 +141,8 @@ export class Query<T> {
    * @returns
    */
   async deleteOne(filter: Filter<T>, options?: DeleteOptions) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.deleteOne(filter, options);
+    const collection = this.checkConnection();
+    return collection.deleteOne(filter, options);
   }
 
   /**
@@ -152,10 +153,8 @@ export class Query<T> {
    * @returns
    */
   async deleteMany(filter?: Filter<T>, options?: DeleteOptions) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.deleteMany(filter ?? {}, options);
+    const collection = this.checkConnection();
+    return collection.deleteMany(filter ?? {}, options);
   }
 
   /**
@@ -175,10 +174,8 @@ export class Query<T> {
     query?: Filter<T>,
     options?: DistinctOptions,
   ) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return (await this.collection.distinct(
+    const collection = this.checkConnection();
+    return (await collection.distinct(
       key as string,
       query,
       options,
@@ -192,10 +189,8 @@ export class Query<T> {
    * @returns
    */
   async drop(options?: DropOptions) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.drop(options);
+    const collection = this.checkConnection();
+    return collection.drop(options);
   }
 
   /**
@@ -205,10 +200,8 @@ export class Query<T> {
    * @returns
    */
   async dropIndex(options: DropIndexOptions) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.dropIndexes(options);
+    const collection = this.checkConnection();
+    return collection.dropIndexes(options);
   }
 
   /**
@@ -222,10 +215,8 @@ export class Query<T> {
     filter?: Filter<T>,
     options?: FindOptions,
   ): Promise<FindCursor<T>> {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.find(filter, options);
+    const collection = this.checkConnection();
+    return collection.find(filter, options);
   }
 
   /**
@@ -236,10 +227,8 @@ export class Query<T> {
    * @returns
    */
   async findOne(filter?: Filter<T>, options?: FindOptions) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.findOne(filter, options);
+    const collection = this.checkConnection();
+    return collection.findOne(filter, options);
   }
 
   /**
@@ -248,10 +237,8 @@ export class Query<T> {
    * @returns
    */
   async listIndexes() {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
-    return this.collection.listIndexes();
+    const collection = this.checkConnection();
+    return collection.listIndexes();
   }
 
   /**
@@ -268,9 +255,7 @@ export class Query<T> {
     update: UpdateFilter<T>,
     options?: UpdateOptions,
   ): Promise<T> {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
+    const collection = this.checkConnection();
 
     const existDoc = await this.findOne(filter, { projection: { _id: 1 } });
     if (!existDoc) {
@@ -283,7 +268,7 @@ export class Query<T> {
     };
 
     // @ts-ignore
-    const updatedRes = await this.collection.updateOne(filter, {
+    const updatedRes = await collection.updateOne(filter, {
       $set: updateData,
     }, options);
     const doc = await this.findOne({ _id: updatedRes.upsertedId });
@@ -304,9 +289,7 @@ export class Query<T> {
     data: Partial<CreateOne<T>>,
     options?: InsertOptions | UpdateOptions,
   ): Promise<T> {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
+    const collection = this.checkConnection();
 
     const existedData = await this.findOne(filter);
     if (existedData) {
@@ -316,7 +299,7 @@ export class Query<T> {
       };
 
       // @ts-ignore
-      const newDoc = await this.collection.updateOne(filter, {
+      const newDoc = await collection.updateOne(filter, {
         $set: updateData,
       }, options);
 
@@ -341,9 +324,7 @@ export class Query<T> {
     documents: UpdateFilter<T>,
     options?: UpdateOptions,
   ) {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
+    const collection = this.checkConnection();
 
     const updateData = {
       ...documents,
@@ -351,30 +332,8 @@ export class Query<T> {
     };
 
     // @ts-ignore
-    return this.collection.updateMany(filter, { $set: updateData }, options);
+    return collection.updateMany(filter, { $set: updateData }, options);
   }
 }
-
-// API for Query
-interface IMovieModel {
-  _id: string;
-
-  name: string;
-
-  email: string;
-
-  password: string;
-
-  createdAt: Date;
-
-  updatedAt: Date;
-}
-
-// const query = new Query<IMovieModel>("users");
-// await query.create({ poster: "", slug: "", title: "" }, {})
-// const datas = await query.createMany([{ poster: "", slug: "", title: "" }], {})
-// const upsert = await query.upsert({ slug: "ok" }, { poster: "Oke", slug: "Ok", title: "OK" });
-
-// const distinctRes = await query.distinct<Date>("updatedAt");
 
 export default Query;

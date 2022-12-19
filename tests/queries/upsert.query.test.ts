@@ -1,13 +1,3 @@
-/**
- * The only difference between novo and novo_test is that in novo_test,
- * we can't open a TCP connection to the database.
- *
- * Instead, We have to do it manually inside your test.
- */
-import { novo_test as novo } from "../../src/Novo_Test.ts";
-
-import { Model } from "../../src/Model.ts";
-import { CreateOne } from "../../src/Query.ts";
 import {
   afterAll,
   assertEquals,
@@ -18,9 +8,15 @@ import {
   getRandomString,
   it,
 } from "../test.deps.ts";
+import { ObjectId } from '../../deps.ts';
+
+import { novo } from "../../src/Novo.ts";
+
+import { Model } from "../../src/Model.ts";
+import { CreateOne } from "../../src/Query.ts";
 
 interface IUpsertModel {
-  _id: string;
+  _id: ObjectId;
 
   name: string;
 
@@ -43,7 +39,7 @@ describe("Upsert Query Unit Test", () => {
 
   afterAll(async () => {
     await UpsertModel.deleteMany();
-    await novo.disconnect();
+    novo.disconnect();
   });
 
   const data: CreateOne<IUpsertModel> = {
