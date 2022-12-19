@@ -8,7 +8,7 @@ import {
   getRandomString,
   it,
 } from "../test.deps.ts";
-import { ObjectId } from '../../deps.ts';
+import { ObjectId } from "../../deps.ts";
 
 import { novo } from "../../src/Novo.ts";
 

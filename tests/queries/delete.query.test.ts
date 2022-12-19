@@ -50,11 +50,11 @@ describe("Delete Query Unit Testing", () => {
   });
 
   it("Should delete many documents", async () => {
-    const docs = await (await DeleteModel.find({ status: "Active" })).toArray();
+    const docs = await DeleteModel.find({ status: "Active" });
     if (docs.length < 1) assertThrows(() => new Error("Invalid Test"));
 
     await DeleteModel.deleteMany({});
-    const deleted = await (await DeleteModel.find()).toArray();
+    const deleted = await DeleteModel.find();
 
     assertEquals(deleted.length, 0);
   });

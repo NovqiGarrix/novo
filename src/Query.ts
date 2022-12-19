@@ -9,7 +9,6 @@ import {
   DropIndexOptions,
   DropOptions,
   Filter,
-  FindCursor,
   FindOptions,
   InsertDocument,
   InsertOptions,
@@ -56,7 +55,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async aggregate(
+  aggregate(
     pipeline: Array<AggregatePipeline<T>>,
     options?: AggregateOptions,
   ) {
@@ -94,7 +93,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async createIndexes(options: CreateIndexOptions) {
+  createIndexes(options: CreateIndexOptions) {
     const collection = this.checkConnection();
     return collection.createIndexes(options);
   }
@@ -128,7 +127,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param filter
    * @returns
    */
-  async count(filter?: Filter<T>): Promise<number> {
+  count(filter?: Filter<T>): Promise<number> {
     const collection = this.checkConnection();
     return collection.countDocuments(filter);
   }
@@ -140,7 +139,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async deleteOne(filter: Filter<T>, options?: DeleteOptions) {
+  deleteOne(filter: Filter<T>, options?: DeleteOptions) {
     const collection = this.checkConnection();
     return collection.deleteOne(filter, options);
   }
@@ -152,7 +151,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async deleteMany(filter?: Filter<T>, options?: DeleteOptions) {
+  deleteMany(filter?: Filter<T>, options?: DeleteOptions) {
     const collection = this.checkConnection();
     return collection.deleteMany(filter ?? {}, options);
   }
@@ -188,7 +187,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async drop(options?: DropOptions) {
+  drop(options?: DropOptions) {
     const collection = this.checkConnection();
     return collection.drop(options);
   }
@@ -199,7 +198,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async dropIndex(options: DropIndexOptions) {
+  dropIndex(options: DropIndexOptions) {
     const collection = this.checkConnection();
     return collection.dropIndexes(options);
   }
@@ -211,12 +210,12 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async find(
+  find(
     filter?: Filter<T>,
     options?: FindOptions,
-  ): Promise<FindCursor<T>> {
+  ): Promise<Array<T>> {
     const collection = this.checkConnection();
-    return collection.find(filter, options);
+    return collection.find(filter, options).toArray();
   }
 
   /**
@@ -226,7 +225,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async findOne(filter?: Filter<T>, options?: FindOptions) {
+  findOne(filter?: Filter<T>, options?: FindOptions) {
     const collection = this.checkConnection();
     return collection.findOne(filter, options);
   }
@@ -236,7 +235,7 @@ export class Query<T extends { _id: ObjectId }> {
    *
    * @returns
    */
-  async listIndexes() {
+  listIndexes() {
     const collection = this.checkConnection();
     return collection.listIndexes();
   }
@@ -267,7 +266,7 @@ export class Query<T extends { _id: ObjectId }> {
       updatedAt: new Date(),
     };
 
-    // @ts-ignore
+    // @ts-ignore - Bad Types
     const updatedRes = await collection.updateOne(filter, {
       $set: updateData,
     }, options);
@@ -298,7 +297,7 @@ export class Query<T extends { _id: ObjectId }> {
         updatedAt: new Date(),
       };
 
-      // @ts-ignore
+      // @ts-ignore - Bad Types
       const newDoc = await collection.updateOne(filter, {
         $set: updateData,
       }, options);
@@ -319,7 +318,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @param options
    * @returns
    */
-  async updateMany(
+  updateMany(
     filter: Filter<T>,
     documents: UpdateFilter<T>,
     options?: UpdateOptions,
@@ -331,7 +330,7 @@ export class Query<T extends { _id: ObjectId }> {
       updatedAt: new Date(),
     };
 
-    // @ts-ignore
+    // @ts-ignore - Bad Types
     return collection.updateMany(filter, { $set: updateData }, options);
   }
 }

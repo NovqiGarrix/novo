@@ -5,7 +5,7 @@ import {
   describe,
   it,
 } from "../test.deps.ts";
-import { ObjectId } from '../../deps.ts';
+import { ObjectId } from "../../deps.ts";
 
 import { novo } from "../../src/Novo.ts";
 import { Model } from "../../src/Model.ts";
@@ -80,9 +80,9 @@ describe("Update Query Unit Testing", () => {
       assertEquals(updatedRes.modifiedCount, 2);
 
       const updatedDocs =
-        await (await UpdateModel.find({ status: updateData.status })).toArray();
+        await (await UpdateModel.find({ status: updateData.status }));
 
-      let index = 0;
+      const index = 0;
       for (const doc of updatedDocs) {
         assertEquals(doc._id, docs.insertedIds[index]);
         assertEquals(doc.status, updateData.status);

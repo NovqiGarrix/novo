@@ -16,6 +16,7 @@ deno task example
 ```
 
 ### Create a Model
+
 ```ts
 // example/models/movie.model.ts
 
@@ -37,8 +38,9 @@ interface IMovieModel {
 
 const createMovieModel = () => novo.model<IMovieModel>("you-collection-name");
 export default createMovieModel;
-
 ```
+
+### Use The Model
 
 ```ts
 /**
@@ -64,7 +66,9 @@ Deno.exit(0);
 ```
 
 ## Run Unit Test
+
 To run the unit tests:
+
 ```bash
 deno task test
 ```

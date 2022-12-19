@@ -8,7 +8,7 @@ import {
   it,
 } from "../test.deps.ts";
 
-import { ObjectId } from '../../deps.ts';
+import { ObjectId } from "../../deps.ts";
 
 import { novo } from "../../src/Novo.ts";
 import { Model } from "../../src/Model.ts";
@@ -52,7 +52,7 @@ describe("Find Query Unit Testing", () => {
   });
 
   it("Should Find All the documents", async () => {
-    const docs = await (await FindModel.find()).toArray();
+    const docs = await FindModel.find();
     assertEquals(docs.length, 2);
 
     let index = 0;
