@@ -1,7 +1,7 @@
 # Novo
 
-Novo is a simple Object Data Modeling (ODM) for MongoDB. Novo is created for your Mongodb project in Deno. 
-It's easy to use and blazingly fast.
+Novo is a simple Object Data Modeling (ODM) for MongoDB. Novo is created for
+your Mongodb project in Deno. It's easy to use and blazingly fast.
 
 ## TODOs
 

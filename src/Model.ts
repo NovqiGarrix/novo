@@ -6,13 +6,11 @@ import Query from "./Query.ts";
 // Last, extends model nya ke class sini.
 
 export class Model<T> extends Query<T> {
-
-    constructor(collectionName: string) {
-        super(collectionName);
-    }
-
+  constructor(collectionName: string) {
+    super(collectionName);
+  }
 }
 
 export default function model<T>(collectionName: string): Model<T> {
-    return new Model<T>(collectionName);
+  return new Model<T>(collectionName);
 }

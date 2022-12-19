@@ -1,19 +1,17 @@
-import { novo } from '../../mod.ts';
+import { novo } from "../../mod.ts";
 
 interface IMovieModel {
+  _id: string;
 
-    _id: string;
+  slug: string;
 
-    slug: string;
+  title: string;
 
-    title: string;
+  poster: string;
 
-    poster: string;
+  createdAt: string;
 
-    createdAt: string;
-
-    updatedAt: string;
-
+  updatedAt: string;
 }
 
 const MovieModel = novo.model<IMovieModel>("movies");
