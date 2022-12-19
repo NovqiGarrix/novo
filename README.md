@@ -43,15 +43,14 @@ export default createMovieModel;
 ### Use The Model
 
 ```ts
-/**
- * To make this things work, you have to define your `DATABASE_URL` in your .env file.
- */
 import { novo } from "../mod.ts";
 import createMovieModel from "./models/movie.model.ts";
 
-const MovieModel = createMovieModel();
+await novo.connect("mongodb://localhost:27017/movies");
 
-const avengerEndGame = await MovieModel.findOne({ slug: "avg-endgame" });
+const avengerEndGame = await createMovieModel().findOne({
+  slug: "avg-endgame",
+});
 console.log(`-- ${avengerEndGame?.title} --`);
 console.log(avengerEndGame);
 

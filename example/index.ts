@@ -1,11 +1,7 @@
-/**
- * To make this things work, you have to define your DATABASE_URL in your .env file.
- */
 import { novo } from "../mod.ts";
-
 import createMovieModel from "./models/movie.model.ts";
 
-await novo.connect(Deno.env.get("DATABASE_URL")!);
+await novo.connect("mongodb://localhost:27017/movies");
 
 const avengerEndGame = await createMovieModel().findOne({
   slug: "avg-endgame",
