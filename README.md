@@ -33,5 +33,4 @@ await novo.disconnect();
 
 ## Free for Contributions
 
-Hey, Developers. I'm glad, that if we're together working on this ODM for Deno
-environment.
+Hey, Developers. I'm glad if we're working together on this project.
