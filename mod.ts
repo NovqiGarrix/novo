@@ -1,8 +1,9 @@
 export { Novo, novo } from "./src/Novo.ts";
+export { Collection, ObjectId } from './deps.ts';
+
 export type {
   AggregateOptions,
   AggregatePipeline,
-  Collection,
   CreateIndexOptions,
   DeleteOptions,
   DistinctOptions,
@@ -13,7 +14,6 @@ export type {
   FindOptions,
   InsertDocument,
   InsertOptions,
-  ObjectId,
   UpdateFilter,
   UpdateOptions,
 } from "./deps.ts";
