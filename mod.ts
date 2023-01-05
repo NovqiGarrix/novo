@@ -1,5 +1,6 @@
 export { Novo, novo } from "./src/Novo.ts";
 export { Collection, ObjectId } from './deps.ts';
+export { Model } from './src/Model.ts';
 
 export type {
   AggregateOptions,
