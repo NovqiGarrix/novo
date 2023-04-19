@@ -14,5 +14,5 @@ interface IMovieModel {
   updatedAt: string;
 }
 
-const createMovieModel = () => novo.model<IMovieModel>("movies");
-export default createMovieModel;
+const MovieModel = novo.model<IMovieModel>("movies");
+export default MovieModel;

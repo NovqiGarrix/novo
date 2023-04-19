@@ -2,5 +2,10 @@
   "tasks": {
     "example": "deno run -A example/index.ts",
     "test": "deno test -A tests"
+  },
+  "fmt": {
+    "options": {
+      "indentWidth": 4
+    }
   }
 }

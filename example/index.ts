@@ -1,9 +1,9 @@
 import { novo } from "../mod.ts";
-import createMovieModel from "./models/movie.model.ts";
+import MovieModel from "./models/movie.model.ts";
 
 await novo.connect("mongodb://localhost:27017/movies");
 
-const avengerEndGame = await createMovieModel().findOne({
+const avengerEndGame = await MovieModel.findOne({
   slug: "avg-endgame",
 });
 console.log(`-- ${avengerEndGame?.title} --`);

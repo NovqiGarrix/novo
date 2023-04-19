@@ -29,22 +29,22 @@ interface Timestamp {
 }
 
 export class Query<T extends { _id: ObjectId }> {
-  private collection: Collection<T> | undefined;
+
+  public collection?: Collection<T>;
+  private collectionName: string;
+  private dbName: string | undefined;
 
   constructor(collectionName: string, dbName?: string) {
-    if (!Novo.client) {
-      throw new Error("You have to connect to the database first.");
-    }
-
-    const db = Novo.client.database(dbName);
-    this.collection = db.collection<T>(collectionName);
+    this.dbName = dbName;
+    this.collectionName = collectionName;
   }
 
-  private checkConnection() {
-    if (!this.collection) {
-      throw new Error("You haven't connect to the database, Buddy.");
-    }
+  private getCollection(): Collection<T> {
+    if (this.collection) return this.collection;
+    if (!Novo.client) throw new Error("No connection found. Please connect to the database first.");
 
+    const db = Novo.client.database(this.dbName);
+    this.collection = db.collection<T>(this.collectionName);
     return this.collection;
   }
 
@@ -59,7 +59,7 @@ export class Query<T extends { _id: ObjectId }> {
     pipeline: Array<AggregatePipeline<T>>,
     options?: AggregateOptions,
   ) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.aggregate(pipeline, options);
   }
 
@@ -72,7 +72,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   async create(data: CreateOne<T>, options?: InsertOptions): Promise<T> {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
 
     const insertData: CreateOne<T> & Timestamp = {
       ...data as CreateOne<T>,
@@ -94,7 +94,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   createIndexes(options: CreateIndexOptions) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.createIndexes(options);
   }
 
@@ -106,7 +106,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   async createMany(data: CreateMany<T>, options?: InsertOptions) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
 
     const inserdata = data.map((item) => ({
       ...item,
@@ -128,7 +128,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   count(filter?: Filter<T>): Promise<number> {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.countDocuments(filter);
   }
 
@@ -140,7 +140,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   deleteOne(filter: Filter<T>, options?: DeleteOptions) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.deleteOne(filter, options);
   }
 
@@ -152,7 +152,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   deleteMany(filter?: Filter<T>, options?: DeleteOptions) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.deleteMany(filter ?? {}, options);
   }
 
@@ -173,7 +173,7 @@ export class Query<T extends { _id: ObjectId }> {
     query?: Filter<T>,
     options?: DistinctOptions,
   ) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return (await collection.distinct(
       key as string,
       query,
@@ -188,7 +188,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   drop(options?: DropOptions) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.drop(options);
   }
 
@@ -199,7 +199,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   dropIndex(options: DropIndexOptions) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.dropIndexes(options);
   }
 
@@ -214,7 +214,7 @@ export class Query<T extends { _id: ObjectId }> {
     filter?: Filter<T>,
     options?: FindOptions,
   ): Promise<Array<T>> {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.find(filter, options).toArray();
   }
 
@@ -226,7 +226,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   findOne(filter?: Filter<T>, options?: FindOptions) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.findOne(filter, options);
   }
 
@@ -236,7 +236,7 @@ export class Query<T extends { _id: ObjectId }> {
    * @returns
    */
   listIndexes() {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
     return collection.listIndexes();
   }
 
@@ -251,14 +251,14 @@ export class Query<T extends { _id: ObjectId }> {
    */
   async updateOne(
     filter: Filter<T>,
-    update: UpdateFilter<T>,
+    update: Partial<T>,
     options?: UpdateOptions,
-  ): Promise<T> {
-    const collection = this.checkConnection();
+  ) {
+    const collection = this.getCollection();
 
     const existDoc = await this.findOne(filter, { projection: { _id: 1 } });
     if (!existDoc) {
-      throw new Error("You're likely trying to update non-existing document.");
+      throw new Error("You're likely trying to update a non-existing document.");
     }
 
     const updateData = {
@@ -267,11 +267,7 @@ export class Query<T extends { _id: ObjectId }> {
     };
 
     // @ts-ignore - Bad Types
-    const updatedRes = await collection.updateOne(filter, {
-      $set: updateData,
-    }, options);
-    const doc = await this.findOne({ _id: updatedRes.upsertedId });
-    return doc!;
+    return collection.updateOne(filter, { $set: updateData }, options);
   }
 
   /**
@@ -288,7 +284,7 @@ export class Query<T extends { _id: ObjectId }> {
     data: Partial<CreateOne<T>>,
     options?: InsertOptions | UpdateOptions,
   ): Promise<T> {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
 
     const existedData = await this.findOne(filter);
     if (existedData) {
@@ -323,7 +319,7 @@ export class Query<T extends { _id: ObjectId }> {
     documents: UpdateFilter<T>,
     options?: UpdateOptions,
   ) {
-    const collection = this.checkConnection();
+    const collection = this.getCollection();
 
     const updateData = {
       ...documents,

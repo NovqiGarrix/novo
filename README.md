@@ -20,45 +20,49 @@ deno task example
 ```ts
 // example/models/movie.model.ts
 
-import { novo, ObjectId } from "../../mod.ts";
+import {
+    novo,
+    ObjectId,
+} from "https://raw.githubusercontent.com/NovqiGarrix/novo/main/mod.ts";
 
 interface IMovieModel {
-  _id: ObjectId;
+    _id: ObjectId;
 
-  slug: string;
+    slug: string;
 
-  title: string;
+    title: string;
 
-  poster: string;
+    poster: string;
 
-  createdAt: string;
+    createdAt: string;
 
-  updatedAt: string;
+    updatedAt: string;
 }
 
-const createMovieModel = () => novo.model<IMovieModel>("you-collection-name");
-export default createMovieModel;
+// "movies" is the collection name
+const MovieModel = novo.model<IMovieModel>("movies");
+export default MovieModel;
 ```
 
 ### Use The Model
 
 ```ts
-import { novo } from "../mod.ts";
-import createMovieModel from "./models/movie.model.ts";
+import { novo } from "https://raw.githubusercontent.com/NovqiGarrix/novo/main/mod.ts";
+import MovieModel from "./models/movie.model.ts";
 
 await novo.connect("mongodb://localhost:27017/movies");
 
-const avengerEndGame = await createMovieModel().findOne({
-  slug: "avg-endgame",
+const avengerEndGame = await MovieModel.findOne({
+    slug: "avg-endgame",
 });
 console.log(`-- ${avengerEndGame?.title} --`);
 console.log(avengerEndGame);
 
 globalThis.addEventListener("unload", () => {
-  /** Disconnect from database when deno is about to exit.
-   * NOTE: This action is required.
-   */
-  novo.disconnect();
+    /** Disconnect from database when deno is about to exit.
+     * NOTE: This action is required.
+     */
+    novo.disconnect();
 });
 
 Deno.exit(0);
